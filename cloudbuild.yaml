@@ -1,14 +1,14 @@
 steps:
 # Build the container image
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['build', '-t', 'gcr.io/scrum-master-dev-346009/scrummasterapi', '.']
+  args: ['build', '-t', 'gcr.io/scrum-master-backend-dev/scrummasterapi', '.']
   id: build-docker-image
 
 # Push the container image to Container Registry
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['push', 'gcr.io/scrum-master-dev-346009/scrummasterapi']
+  args: ['push', 'gcr.io/scrum-master-backend-dev/scrummasterapi']
   id: push-docker-image-to-container
-
+  timeout: 960s
 
 
 # # Django make migrations
@@ -35,9 +35,9 @@ steps:
   args:
     [
         "-i",
-        "gcr.io/scrum-master-dev-346009/scrummasterapi",
+        "gcr.io/scrum-master-backend-dev/scrummasterapi",
         "-s",
-        "scrum-master-dev-346009:us-central1:scrummaster-db",
+        "scrum-master-backend-dev:us-central1:scrummaster-db",
         # "-e",
         # "SETTINGS_NAME=fdb_backend_settings",
         "--",
@@ -74,7 +74,7 @@ steps:
   args: ["run",
          "deploy",
          "scrummasterapi",
-         "--image", "gcr.io/scrum-master-dev-346009/scrummasterapi",
+         "--image", "gcr.io/scrum-master-backend-dev/scrummasterapi",
          "--platform",
          "managed",
          "--region",
@@ -82,11 +82,11 @@ steps:
          "--allow-unauthenticated",
          "--verbosity=debug",
          "--project",
-         "scrum-master-dev-346009"
+         "scrum-master-backend-dev"
   ]
   # waitFor: ['run-django-project']
   id: deploy
 
 
 images:
-- gcr.io/scrum-master-dev-346009/scrummasterapi
+- gcr.io/scrum-master-backend-dev/scrummasterapi
