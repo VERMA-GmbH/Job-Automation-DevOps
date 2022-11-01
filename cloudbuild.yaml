@@ -1,0 +1,92 @@
+steps:
+# Build the container image
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['build', '-t', 'gcr.io/scrum-master-dev-346009/scrummasterapi', '.']
+  id: build-docker-image
+
+# Push the container image to Container Registry
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['push', 'gcr.io/scrum-master-dev-346009/scrummasterapi']
+  id: push-docker-image-to-container
+
+
+
+# # Django make migrations
+# - id: "django-makemigrations"
+#   name: "gcr.io/google-appengine/exec-wrapper"
+#   args:
+#     [
+#         "-i",
+#         "gcr.io/scrum-master-dev-346009/scrummasterapi",
+#         "-s",
+#         "scrum-master-dev-346009:global:Scrummasterbackendapi",
+#         # "-e",
+#         # "SETTINGS_NAME=fdb_backend_settings",
+#         "--",
+#         "python",
+#         "manage.py",
+#         "makemigrations",
+#     ]
+
+
+# Django migrate
+- id: "apply-django-migrations"
+  name: "gcr.io/google-appengine/exec-wrapper"
+  args:
+    [
+        "-i",
+        "gcr.io/scrum-master-dev-346009/scrummasterapi",
+        "-s",
+        "scrum-master-dev-346009:us-central1:scrummaster-db",
+        # "-e",
+        # "SETTINGS_NAME=fdb_backend_settings",
+        "--",
+        "python",
+        "scrum-master/manage.py",
+        "migrate",
+    ]
+
+# # Djagno run
+# - id: "run-django-project"
+#   name: "gcr.io/google-appengine/exec-wrapper"
+#   args:
+#     [
+#         "-i",
+#         "gcr.io/scrum-master-dev-346009/scrummasterapi:$COMMIT_SHA",
+#         "-s",
+#         "scrum-master-dev-346009:us-central1:scrummaster-db",
+#         # "-e",
+#         # "SETTINGS_NAME=fdb_backend_settings",
+#         "--",
+#         "python",
+#         "manage.py",
+#         "runserver",
+#         "0.0.0.0:8000"
+#     ]
+#     # waitFor: ['apply-django-migrations']
+
+
+    
+
+# Deploy container image to Cloud Run
+- name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+  entrypoint: gcloud
+  args: ["run",
+         "deploy",
+         "scrummasterapi",
+         "--image", "gcr.io/scrum-master-dev-346009/scrummasterapi",
+         "--platform",
+         "managed",
+         "--region",
+         "us-central1",
+         "--allow-unauthenticated",
+         "--verbosity=debug",
+         "--project",
+         "scrum-master-dev-346009"
+  ]
+  # waitFor: ['run-django-project']
+  id: deploy
+
+
+images:
+- gcr.io/scrum-master-dev-346009/scrummasterapi
