@@ -1,12 +1,12 @@
 steps:
 # Build the container image
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['build', '-t', 'gcr.io/scrum-master-backend-dev/scrummasterapi', '.']
+  args: ['build', '-t', 'gcr.io/job-automation-devops/reactapptodo', '.']
   id: build-docker-image
 
 # Push the container image to Container Registry
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['push', 'gcr.io/scrum-master-backend-dev/scrummasterapi']
+  args: ['push', 'gcr.io/job-automation-devops/reactapptodo']
   id: push-docker-image-to-container
   timeout: 960s
 
@@ -17,7 +17,7 @@ steps:
 #   args:
 #     [
 #         "-i",
-#         "gcr.io/scrum-master-dev-346009/scrummasterapi",
+#         "gcr.io/scrum-master-dev-346009/reactapptodo",
 #         "-s",
 #         "scrum-master-dev-346009:global:Scrummasterbackendapi",
 #         # "-e",
@@ -35,14 +35,14 @@ steps:
   args:
     [
         "-i",
-        "gcr.io/scrum-master-backend-dev/scrummasterapi",
+        "gcr.io/job-automation-devops/reactapptodo",
         "-s",
-        "scrum-master-backend-dev:us-central1:scrummaster-db",
+        "job-automation-devops:us-central1:reactapptodo-db",
         # "-e",
         # "SETTINGS_NAME=fdb_backend_settings",
         "--",
         "python",
-        "scrum-master/manage.py",
+        "job-automation-devops/manage.py",
         "migrate",
     ]
 
@@ -52,9 +52,9 @@ steps:
 #   args:
 #     [
 #         "-i",
-#         "gcr.io/scrum-master-dev-346009/scrummasterapi:$COMMIT_SHA",
+#         "gcr.io/scrum-master-dev-346009/reactapptodo:$COMMIT_SHA",
 #         "-s",
-#         "scrum-master-dev-346009:us-central1:scrummaster-db",
+#         "scrum-master-dev-346009:us-central1:reactapptodo-db",
 #         # "-e",
 #         # "SETTINGS_NAME=fdb_backend_settings",
 #         "--",
@@ -73,8 +73,8 @@ steps:
   entrypoint: gcloud
   args: ["run",
          "deploy",
-         "scrummasterapi",
-         "--image", "gcr.io/scrum-master-backend-dev/scrummasterapi",
+         "reactapptodo",
+         "--image", "gcr.io/job-automation-devops/reactapptodo",
          "--platform",
          "managed",
          "--region",
@@ -82,11 +82,11 @@ steps:
          "--allow-unauthenticated",
          "--verbosity=debug",
          "--project",
-         "scrum-master-backend-dev"
+         "job-automation-devops"
   ]
   # waitFor: ['run-django-project']
   id: deploy
 
 
 images:
-- gcr.io/scrum-master-backend-dev/scrummasterapi
+- gcr.io/job-automation-devops/reactapptodo
