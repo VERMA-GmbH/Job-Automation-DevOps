@@ -1,31 +1,11 @@
-# syntax=docker/dockerfile:1
-FROM python:3.8
-ENV PYTHONDONTWRITEBYTECODE=1
-ENV PYTHONUNBUFFERED=1
-ENV PORT 8080
-
-RUN mkdir /services/
-# COPY requirements.txt /services/
-
-RUN apt-get update
-RUN apt-get -y install python3-dev
-RUN apt-get -y install libevent-dev
-RUN apt-get install build-essential
-RUN apt-get -y install gcc
-RUN apt-get install g++
-
-RUN pip install --upgrade pip && pip install wheel
-# RUN pip install docker-compose
-COPY . /services/
-WORKDIR /services
-# RUN cd API/scrum-master
-RUN pip install -r requirements.txt
-# RUN python manage.py migrate
-# RUN python manage.py runserver 0.0.0.0:8000
+FROM maven:3.6.1-jdk-8-slim AS build
+RUN mkdir -p workspace
+WORKDIR workspace
+COPY pom.xml /workspace
+COPY src /workspace/src
+COPY calculator-ui /workspace/calculator-ui
+RUN mvn -f pom.xml clean install -DskipTests=true
+FROM openjdk:8-alpine
+COPY --from=build /workspace/target/*.jar app.jar
 EXPOSE 8080
-
-
-ADD script.sh /
-RUN chmod +x /script.sh
-
-CMD ["/script.sh"]
+ENTRYPOINT ["java","-jar","app.jar"]
