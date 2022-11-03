@@ -1,14 +1,14 @@
 steps:
 # Build the container image
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['build', '-t', 'gcr.io/devops-automation-367109', '.']
+  args: ['build', '-t', 'gcr.io/job-automation-devops', '.']
   id: build-docker-image
 
 # Push the container image to Container Registry
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['push', 'gcr.io/devops-automation-367109']
+  args: ['push', 'gcr.io/job-automation-devops']
   id: push-docker-image-to-container
   timeout: 960s
 
 images:
-- gcr.io/devops-automation-367109/reactapptodo
+- gcr.io/job-automation-devops/reactapptodo
