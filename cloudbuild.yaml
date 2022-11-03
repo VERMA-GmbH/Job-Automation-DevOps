@@ -8,6 +8,5 @@
   args: ['push', 'gcr.io/job-automation-devops/reactapptodo']
   id: push-docker-image-to-container
   timeout: 960s
-
-- images:
+images:
 - gcr.io/job-automation-devops/reactapptodo
