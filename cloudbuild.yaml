@@ -1,92 +1,14 @@
 steps:
 # Build the container image
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['build', '-t', 'gcr.io/job-automation-devops/reactapptodo', '.']
+  args: ['build', '-t', 'gcr.io/devops-automation-367109', '.']
   id: build-docker-image
 
 # Push the container image to Container Registry
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['push', 'gcr.io/job-automation-devops/reactapptodo']
+  args: ['push', 'gcr.io/devops-automation-367109']
   id: push-docker-image-to-container
   timeout: 960s
 
-
-# # Django make migrations
-# - id: "django-makemigrations"
-#   name: "gcr.io/google-appengine/exec-wrapper"
-#   args:
-#     [
-#         "-i",
-#         "gcr.io/scrum-master-dev-346009/reactapptodo",
-#         "-s",
-#         "scrum-master-dev-346009:global:Scrummasterbackendapi",
-#         # "-e",
-#         # "SETTINGS_NAME=fdb_backend_settings",
-#         "--",
-#         "python",
-#         "manage.py",
-#         "makemigrations",
-#     ]
-
-
-# Django migrate
-- id: "apply-django-migrations"
-  name: "gcr.io/google-appengine/exec-wrapper"
-  args:
-    [
-        "-i",
-        "gcr.io/job-automation-devops/reactapptodo",
-        "-s",
-        "job-automation-devops:us-central1:reactapptodo-db",
-        # "-e",
-        # "SETTINGS_NAME=fdb_backend_settings",
-        "--",
-        "python",
-        "job-automation-devops/manage.py",
-        "migrate",
-    ]
-
-# # Djagno run
-# - id: "run-django-project"
-#   name: "gcr.io/google-appengine/exec-wrapper"
-#   args:
-#     [
-#         "-i",
-#         "gcr.io/scrum-master-dev-346009/reactapptodo:$COMMIT_SHA",
-#         "-s",
-#         "scrum-master-dev-346009:us-central1:reactapptodo-db",
-#         # "-e",
-#         # "SETTINGS_NAME=fdb_backend_settings",
-#         "--",
-#         "python",
-#         "manage.py",
-#         "runserver",
-#         "0.0.0.0:8000"
-#     ]
-#     # waitFor: ['apply-django-migrations']
-
-
-    
-
-# Deploy container image to Cloud Run
-- name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
-  entrypoint: gcloud
-  args: ["run",
-         "deploy",
-         "reactapptodo",
-         "--image", "gcr.io/job-automation-devops/reactapptodo",
-         "--platform",
-         "managed",
-         "--region",
-         "us-central1",
-         "--allow-unauthenticated",
-         "--verbosity=debug",
-         "--project",
-         "job-automation-devops"
-  ]
-  # waitFor: ['run-django-project']
-  id: deploy
-
-
 images:
-- gcr.io/job-automation-devops/reactapptodo
+- gcr.io/devops-automation-367109/reactapptodo
