@@ -2,8 +2,8 @@
 FROM node:alpine as builder
 WORKDIR /app
 COPY . ./
-RUN yarn install
-RUN yarn build
+RUN npm install
+RUN npm run build
 # server environment
 #FROM nginx:alpine
 #COPY ./nginx.conf /etc/nginx/conf.d/configfile.template
