@@ -1,0 +1,51 @@
+version: "3.9"
+
+
+# services:
+#   app:
+#     container_name: scrum-master
+#     build:
+#       context: .
+#     ports:
+#       - 8000:8000
+#     volumes:
+#       - ./:/services
+#       - ./secrets/cloudsql/creds.json:/secrets/creds.json
+#     env_file:
+#       - ./API/scrum-master/.env
+#     restart: always
+
+  # cloudsqlproxy:
+  #   container_name: cloudsql-proxy
+  #   image: gcr.io/cloudsql-docker/gce-proxy:1.19.1
+  #   volumes:
+  #     - ./secrets/cloudsql/creds.json:/secrets/cloudsql/creds.json
+  #   ports:
+  #     - 127.0.0.0:5432:5432
+  #   command: /cloud_sql_proxy -instances="scrum-master-dev-346009:us-east1:django-dev-db"=tcp:0.0.0.0:5432 -credential_file=/secrets/cloudsql/creds.json
+  #   restart: always
+
+
+services:
+  # db:
+  #   image: postgres
+  #   volumes:
+  #     - ./data/db:/var/lib/postgresql/data
+  #   environment:
+  #     - POSTGRES_DB=postgres
+  #     - POSTGRES_USER=postgres
+  #     - POSTGRES_PASSWORD=postgres
+  web:
+    build: .
+    # working_dir: /scrum_master
+    command: /bin/bash -c "cd API/scrum_master && python manage.py runserver 0.0.0.0:8000"
+    volumes:
+      - .:/code
+    ports:
+      - "8000:8000"
+    # environment:
+    #   - POSTGRES_NAME=postgres
+    #   - POSTGRES_USER=postgres
+    #   - POSTGRES_PASSWORD=postgres
+    # depends_on:
+    #   - db
