@@ -2,11 +2,11 @@ actions:
 - action: "Deploy to Google App Engine/devops-automation-367109"
   type: "GOOGLE_APP_DEPLOY"
   local_path: "/"
-  bucket_name: "artifacts.devops-automation-367109.appspot.com"
+# bucket_name: "artifacts.devops-automation-367109.appspot.com"
   application_name: "devops-automation-367109"
-  version_label: "${DEVOPS_EXECUTION_REVISION}"
+# version_label: "${DEVOPS_EXECUTION_REVISION}"
   image_url: "gcr.io/devops-automation-367109"
   promote_all_traffic: true
   stop_previous_version: true
   verbosity: "warning"
-  integration_hash: ""
+# integration_hash: ""
